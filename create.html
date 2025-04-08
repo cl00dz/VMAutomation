@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Create VM - Proxmox VM Automation{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>Create New Virtual Machine</h1>
+            <p class="lead">Configure your new VM with the options below.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form id="create-vm-form">
+                <!-- Basic VM Information -->
+                <div class="mb-4">
+                    <h4>Basic Information</h4>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="vm-name" class="form-label">VM Name</label>
+                            <input type="text" class="form-control" id="vm-name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="node" class="form-label">Proxmox Node</label>
+                            <select class="form-select" id="node" name="node" required>
+                                <option value="" selected disabled>Select a node</option>
+                                {% for node in nodes %}
+                                <option value="{{ node.node }}">{{ node.node }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="os-type" class="form-label">Operating System</label>
+                            <select class="form-select" id="os-type" name="ostype">
+                                <option value="win10" selected>Windows 10</option>
+                                <option value="win11">Windows 11</option>
+                                <option value="l26">Linux 2.6/3.x/4.x Kernel</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="description" class="form-label">Description (Optional)</label>
+                            <input type="text" class="form-control" id="description" name="description">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hardware Configuration -->
+                <div class="mb-4">
+                    <h4>Hardware Configuration</h4>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="cores" class="form-label">CPU Cores</label>
+                            <input type="number" class="form-control" id="cores" name="cores" min="1" max="16" value="1" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="memory" class="form-label">Memory (MB)</label>
+                            <input type="number" class="form-control" id="memory" name="memory" min="512" step="512" value="1024" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="disk-size" class="form-label">Disk Size (GB)</label>
+                            <input type="number" class="form-control" id="disk-size" name="disk_size" min="5" value="10" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Software Options -->
+                <div class="mb-4">
+                    <h4>Software Options</h4>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="software-option" id="arr-suite-option">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="arr-suite" name="software" value="arr_suite">
+                                    <label class="form-check-label" for="arr-suite">
+                                        <div class="software-icon">
+                                            <i class="fas fa-film"></i>
+                                        </div>
+                                        <h5>ARR Suite</h5>
+                                        <p>Media management suite including Sonarr, Radarr, and related applications</p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="software-option" id="office-suite-option">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="office-suite" name="software" value="office_suite">
+                                    <label class="form-check-label" for="office-suite">
+                                        <div class="software-icon">
+                                            <i class="fas fa-file-word"></i>
+                                        </div>
+                                        <h5>Open Source Office Suite</h5>
+                                        <p>LibreOffice for document, spreadsheet, and presentation editing</p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auto-Scaling Configuration -->
+                <div class="mb-4">
+                    <h4>Auto-Scaling Configuration</h4>
+                    <hr>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="auto-scaling-toggle" name="auto_scaling_enabled">
+                        <label class="form-check-label" for="auto-scaling-toggle">Enable Auto-Scaling</label>
+                    </div>
+                    <div id="auto-scaling-options" class="d-none">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="cpu-threshold-high" class="form-label">CPU High Threshold (%)</label>
+                                <input type="number" class="form-control" id="cpu-threshold-high" name="cpu_threshold_high" min="50" max="95" value="80">
+                                <div class="form-text">Scale up when CPU usage exceeds this value</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="cpu-threshold-low" class="form-label">CPU Low Threshold (%)</label>
+                                <input type="number" class="form-control" id="cpu-threshold-low" name="cpu_threshold_low" min="5" max="40" value="20">
+                                <div class="form-text">Scale down when CPU usage falls below this value</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="scaling-interval" class="form-label">Scaling Interval (seconds)</label>
+                                <input type="number" class="form-control" id="scaling-interval" name="scaling_interval" min="60" value="300">
+                                <div class="form-text">How often to check CPU usage for scaling decisions</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ url_for('vm.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create VM</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('create-vm-form');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Disable submit button and show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating VM...';
+            
+            // Gather form data
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                node: formData.get('node'),
+                ostype: formData.get('ostype'),
+                cores: parseInt(formData.get('cores')),
+                memory: parseInt(formData.get('memory')),
+                disk: `scsi0:local-lvm:${formData.get('disk_size')}G`,
+                auto_scaling_enabled: formData.get('auto_scaling_enabled') === 'on',
+                software: []
+            };
+            
+            // Add optional fields if provided
+            if (formData.get('description')) {
+                data.description = formData.get('description');
+            }
+            
+            // Get selected software options
+            const softwareOptions = document.querySelectorAll('input[name="software"]:checked');
+            softwareOptions.forEach(option => {
+                data.software.push(option.value);
+            });
+            
+            // Add auto-scaling parameters if enabled
+            if (data.auto_scaling_enabled) {
+                data.cpu_threshold_high = parseFloat(formData.get('cpu_threshold_high'));
+                data.cpu_threshold_low = parseFloat(formData.get('cpu_threshold_low'));
+                data.scaling_interval = parseInt(formData.get('scaling_interval'));
+            }
+            
+            // Send API request to create VM
+            fetch('/api/vms', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Redirect to VM details page
+                    window.location.href = `/vm/${result.vm.id}`;
+                } else {
+                    // Show error message
+                    alert('Failed to create VM: ' + (result.error || 'Unknown error'));
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            });
+        });
+    });
+</script>
+{% endblock %}

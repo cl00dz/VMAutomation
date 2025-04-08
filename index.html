@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Proxmox VM Automation{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row align-items-center py-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold">Proxmox VM Automation</h1>
+            <p class="lead">A beginner-friendly DevOps project for VM automation in Proxmox environments.</p>
+            <p class="mb-4">Create, manage, and auto-scale virtual machines with a simple web interface. Perfect for showcasing your DevOps skills.</p>
+            {% if current_user.is_authenticated %}
+            <div class="d-grid gap-2 d-md-flex">
+                <a href="{{ url_for('vm.index') }}" class="btn btn-primary btn-lg px-4 me-md-2">My VMs</a>
+                <a href="{{ url_for('vm.create') }}" class="btn btn-outline-secondary btn-lg px-4">Create VM</a>
+            </div>
+            {% else %}
+            <div class="d-grid gap-2 d-md-flex">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg px-4 me-md-2">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-secondary btn-lg px-4">Register</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <img src="{{ url_for('static', filename='img/server-illustration.svg') }}" alt="Server Illustration" class="img-fluid">
+        </div>
+    </div>
+
+    <div class="row py-5">
+        <div class="col-12 text-center mb-4">
+            <h2>Key Features</h2>
+            <p class="lead">Everything you need to showcase your DevOps skills</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-server fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title h5">VM Creation</h3>
+                    <p class="card-text">Create virtual machines in Proxmox with a simple web interface. Choose from various software options.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-desktop fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title h5">Software Options</h3>
+                    <p class="card-text">Deploy VMs with ARR suite or open-source office suite for Windows 10 telecom users.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title h5">Auto-Scaling</h3>
+                    <p class="card-text">Automatically scale VM resources based on CPU usage to optimize performance and resource utilization.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row py-5 bg-light rounded-3 p-4">
+        <div class="col-12 text-center mb-4">
+            <h2>How It Works</h2>
+            <p class="lead">Simple, efficient, and powerful</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="d-flex align-items-start">
+                <div class="bg-primary text-white rounded-circle p-3 me-3 fs-4 fw-bold">1</div>
+                <div>
+                    <h3 class="h5">Create a VM</h3>
+                    <p>Select your VM specifications and software options from the dropdown menu.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="d-flex align-items-start">
+                <div class="bg-primary text-white rounded-circle p-3 me-3 fs-4 fw-bold">2</div>
+                <div>
+                    <h3 class="h5">Configure Auto-Scaling</h3>
+                    <p>Enable auto-scaling based on CPU usage to optimize resource allocation.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="d-flex align-items-start">
+                <div class="bg-primary text-white rounded-circle p-3 me-3 fs-4 fw-bold">3</div>
+                <div>
+                    <h3 class="h5">Monitor Performance</h3>
+                    <p>Track VM performance and scaling events through the dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row py-5">
+        <div class="col-12 text-center mb-4">
+            <h2>Technologies Used</h2>
+            <p class="lead">Built with modern, beginner-friendly technologies</p>
+        </div>
+        <div class="col-md-3 col-6 text-center mb-4">
+            <i class="fab fa-python fa-3x mb-3 text-primary"></i>
+            <h4 class="h6">Python/Flask</h4>
+        </div>
+        <div class="col-md-3 col-6 text-center mb-4">
+            <i class="fab fa-bootstrap fa-3x mb-3 text-primary"></i>
+            <h4 class="h6">Bootstrap</h4>
+        </div>
+        <div class="col-md-3 col-6 text-center mb-4">
+            <i class="fas fa-database fa-3x mb-3 text-primary"></i>
+            <h4 class="h6">SQLite/PostgreSQL</h4>
+        </div>
+        <div class="col-md-3 col-6 text-center mb-4">
+            <i class="fas fa-server fa-3x mb-3 text-primary"></i>
+            <h4 class="h6">Proxmox API</h4>
+        </div>
+    </div>
+
+    <div class="row py-5 bg-primary text-white rounded-3 p-4">
+        <div class="col-lg-8 mx-auto text-center">
+            <h2>Ready to showcase your DevOps skills?</h2>
+            <p class="lead mb-4">Start creating and managing VMs with our easy-to-use platform.</p>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('vm.create') }}" class="btn btn-light btn-lg px-4">Create Your First VM</a>
+            {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-4">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,207 @@
+/* Custom styles for Proxmox VM Automation */
+
+/* General styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Card styling */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* VM status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-running {
+    background-color: #28a745;
+}
+
+.status-stopped {
+    background-color: #dc3545;
+}
+
+.status-pending {
+    background-color: #ffc107;
+}
+
+/* Dashboard stats */
+.stat-card {
+    text-align: center;
+    padding: 20px;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* Form styling */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+/* VM detail page */
+.resource-gauge {
+    height: 120px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.resource-label {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Auto-scaling section */
+.scaling-timeline {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 30px;
+}
+
+.scaling-timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #dee2e6;
+}
+
+.scaling-event {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.scaling-event::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 15px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #007bff;
+}
+
+.scaling-event.scale-up::before {
+    background-color: #28a745;
+}
+
+.scaling-event.scale-down::before {
+    background-color: #dc3545;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stat-card {
+        margin-bottom: 20px;
+    }
+    
+    .resource-gauge {
+        height: 100px;
+    }
+}
+
+/* MFA setup page */
+.qr-code-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.qr-code-container img {
+    max-width: 200px;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.mfa-instructions {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+/* Software options */
+.software-option {
+    cursor: pointer;
+    padding: 15px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.software-option:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+}
+
+.software-option.selected {
+    border-color: #007bff;
+    background-color: #e7f1ff;
+}
+
+.software-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #6c757d;
+}
+
+.software-option.selected .software-icon {
+    color: #007bff;
+}

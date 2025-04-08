@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Proxmox VM Automation{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">Dashboard</h1>
+            <p class="lead">Welcome back, {{ current_user.username }}! Here's an overview of your virtual machines.</p>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-5">
+        <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
+            <div class="card stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="stat-value">{{ vm_count }}</div>
+                <div class="stat-label">Total VMs</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
+            <div class="card stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div class="stat-value">{{ running_vm_count }}</div>
+                <div class="stat-label">Running VMs</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
+            <div class="card stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <div class="stat-value">{{ total_cpu_cores }}</div>
+                <div class="stat-label">Total CPU Cores</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-memory"></i>
+                </div>
+                <div class="stat-value">{{ total_memory_gb }}</div>
+                <div class="stat-label">Total Memory (GB)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            <a href="{{ url_for('vm.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i>Create New VM
+                            </a>
+                        </div>
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            <a href="{{ url_for('vm.index') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-list me-2"></i>View All VMs
+                            </a>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-user-cog me-2"></i>Manage Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent VMs -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent VMs</h5>
+                    <a href="{{ url_for('vm.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_vms %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>CPU Cores</th>
+                                    <th>Memory</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vm in recent_vms %}
+                                <tr>
+                                    <td>{{ vm.name }}</td>
+                                    <td>
+                                        <span class="badge {% if vm.status == 'running' %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ vm.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ vm.cpu_cores }}</td>
+                                    <td>{{ vm.memory_mb }} MB</td>
+                                    <td>{{ vm.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('vm.detail', vm_id=vm.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p class="mb-3">You don't have any VMs yet.</p>
+                        <a href="{{ url_for('vm.create') }}" class="btn btn-primary">Create Your First VM</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Scaling Events -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Auto-Scaling Events</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_scaling_events %}
+                    <div class="scaling-timeline">
+                        {% for event in recent_scaling_events %}
+                        <div class="scaling-event {{ 'scale-up' if event.event_type == 'scale_up' else 'scale-down' }}">
+                            <div class="d-flex justify-content-between">
+                                <h6>{{ event.vm.name }}</h6>
+                                <small>{{ event.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p>
+                                <strong>{{ 'Scaled Up' if event.event_type == 'scale_up' else 'Scaled Down' }}</strong> - 
+                                CPU: {{ event.old_cpu_cores }} → {{ event.new_cpu_cores }} cores, 
+                                Memory: {{ event.old_memory_mb }} → {{ event.new_memory_mb }} MB
+                            </p>
+                            <div class="text-muted">
+                                <small>CPU Usage: {{ event.cpu_usage|round(1) }}%</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <p>No auto-scaling events recorded yet.</p>
+                        <p class="text-muted">Auto-scaling events will appear here when your VMs scale up or down based on CPU usage.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
