@@ -61,7 +61,7 @@ proxmox-vm-automation/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/proxmox-vm-automation.git
+git clone https://github.com/cl00dz/proxmox-vm-automation.git
 cd proxmox-vm-automation
 ```
 
