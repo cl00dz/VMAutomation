@@ -61,8 +61,8 @@ proxmox-vm-automation/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/cl00dz/proxmox-vm-automation.git
-cd proxmox-vm-automation
+git clone https://github.com/cl00dz/VMAutomation.git
+cd VMAutomation
 ```
 
 2. Create a virtual environment and install dependencies:
